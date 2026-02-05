@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom global styles */
+:root {
+  --color-cases: #3b82f6;
+  --color-deaths: #ef4444;
+  --color-recovered: #22c55e;
+  --color-active: #f97316;
+}
+
+/* Chart container styles */
+.chart-container {
+  @apply rounded-xl bg-base-200 p-4 shadow-lg;
+}
+
+/* Summary card animation */
+.summary-card {
+  @apply transition-all duration-300 hover:scale-105 hover:shadow-xl;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-base-300 rounded-full;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-500 rounded-full hover:bg-gray-400;
+}
+
+/* Loading animation */
+.loading-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Glass effect for cards */
+.glass-card {
+  @apply backdrop-blur-lg bg-base-200 opacity-80 border border-base-300;
+}
