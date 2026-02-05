@@ -50,14 +50,14 @@ const store = useCovidStore();
 
 // Set initial theme
 onMounted(() => {
-  document.documentElement.setAttribute('data-theme', store.isDarkMode ? 'covidDark' : 'light');
+  document.documentElement.setAttribute('data-theme', store.isDarkMode ? 'dark' : 'mytheme');
 });
 
 // Watch for theme changes
 watch(
   () => store.isDarkMode,
   (isDark) => {
-    document.documentElement.setAttribute('data-theme', isDark ? 'covidDark' : 'light');
+    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'mytheme');
   }
 );
 </script>

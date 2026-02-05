@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom global styles */
+/* Custom global styles from previous main.css */
 :root {
   --color-cases: #3b82f6;
   --color-deaths: #ef4444;
