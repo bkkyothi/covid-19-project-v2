@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref, computed, shallowRef } from 'vue';
+import { useThemeStore } from '~/stores/useThemeStore';
 import { covidService } from '~/services';
 import type {
     GlobalSummary,
@@ -25,14 +26,20 @@ export const useCovidStore = defineStore('covid', () => {
     const countries = shallowRef<ApiState<CountryData[]>>(createApiState());
     const continents = shallowRef<ApiState<ContinentData[]>>(createApiState());
     const vaccineCoverage = shallowRef<ApiState<VaccineCoverage>>(createApiState());
+    const vaccineCountries = shallowRef<ApiState<VaccineCoverage[]>>(createApiState());
     const states = shallowRef<ApiState<StateData[]>>(createApiState());
 
     // UI State
-    const isDarkMode = ref(true);
+    // const isDarkMode = ref(true); // Moved to useThemeStore
     const lastUpdated = ref<Date | null>(null);
     const selectedContinent = ref<string | null>(null);
 
     // ============ Computed ============
+
+    const isDarkMode = computed(() => {
+        const themeStore = useThemeStore();
+        return themeStore.isDark;
+    });
 
     const isLoading = computed(() => {
         return (
@@ -55,6 +62,11 @@ export const useCovidStore = defineStore('covid', () => {
     const topCountries = computed(() => {
         if (!countries.value.data) return [];
         return [...countries.value.data].sort((a, b) => b.cases - a.cases).slice(0, 10);
+    });
+
+    const topVaccinatedCountries = computed(() => {
+        if (!vaccineCountries.value.data) return [];
+        return [...vaccineCountries.value.data].sort((a, b) => b.totalVaccinated - a.totalVaccinated).slice(0, 30);
     });
 
     const sortedContinents = computed(() => {
@@ -150,6 +162,15 @@ export const useCovidStore = defineStore('covid', () => {
     }
 
     /**
+     * Fetch vaccine coverage for all countries
+     */
+    async function fetchVaccineCountries(): Promise<void> {
+        vaccineCountries.value = createLoadingState();
+        const result = await covidService.getVaccineCountries();
+        vaccineCountries.value = result;
+    }
+
+    /**
      * Fetch US states
      */
     async function fetchStates(): Promise<void> {
@@ -181,15 +202,20 @@ export const useCovidStore = defineStore('covid', () => {
     /**
      * Toggle dark mode
      */
+    /**
+     * Toggle dark mode
+     */
     function toggleDarkMode(): void {
-        isDarkMode.value = !isDarkMode.value;
+        const themeStore = useThemeStore();
+        themeStore.toggle();
     }
 
     /**
      * Set dark mode
      */
     function setDarkMode(value: boolean): void {
-        isDarkMode.value = value;
+        const themeStore = useThemeStore();
+        themeStore.setMode(value ? 'dark' : 'light');
     }
 
     /**
@@ -208,6 +234,7 @@ export const useCovidStore = defineStore('covid', () => {
         countries,
         continents,
         vaccineCoverage,
+        vaccineCountries,
         states,
         isDarkMode,
         lastUpdated,
@@ -216,6 +243,7 @@ export const useCovidStore = defineStore('covid', () => {
         isLoading,
         hasError,
         topCountries,
+        topVaccinatedCountries,
         sortedContinents,
         displayGlobalSummary,
         filteredCountries,
@@ -227,6 +255,7 @@ export const useCovidStore = defineStore('covid', () => {
         fetchCountries,
         fetchContinents,
         fetchVaccineCoverage,
+        fetchVaccineCountries,
         fetchStates,
         fetchDashboardData,
         refreshData,

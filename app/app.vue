@@ -5,19 +5,23 @@
 </template>
 
 <script setup lang="ts">
-import { useCovidStore } from '~/stores/useCovidStore';
-import { computed } from 'vue';
+import { useThemeStore } from '~/stores/useThemeStore';
+import { computed, onMounted } from 'vue';
 
 /**
  * App Entry Point
  * Root component that wraps all pages with layouts
  */
-const store = useCovidStore();
+const themeStore = useThemeStore();
+
+onMounted(() => {
+  themeStore.init();
+});
 
 useHead({
   htmlAttrs: {
     lang: 'en',
-    'data-theme': computed(() => store.isDarkMode ? 'dark' : 'light'),
+    'data-theme': computed(() => themeStore.isDark ? 'dark' : 'light'),
   },
 });
 </script>

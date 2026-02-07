@@ -7,6 +7,7 @@ module.exports = {
         './plugins/**/*.{js,ts}',
         './app.vue',
     ],
+    darkMode: ['selector', '[data-theme="dark"]'], // Sync Tailwind dark mode with DaisyUI theme
     theme: {
         extend: {
             colors: {

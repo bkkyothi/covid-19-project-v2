@@ -102,6 +102,13 @@ export class CountryData {
         return (this.raw.recovered / this.raw.cases) * 100;
     }
 
+    get fatalityClass(): string {
+        const rate = this.fatalityRate;
+        if (rate >= 3) return 'text-error';
+        if (rate >= 2) return 'text-warning';
+        return 'text-success';
+    }
+
     get coordinates(): { lat: number; lng: number } {
         return {
             lat: this.raw.countryInfo.lat,

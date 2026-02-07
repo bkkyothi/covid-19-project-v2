@@ -300,6 +300,29 @@ export class CovidService {
         }
     }
 
+    /**
+     * Get vaccine coverage for all countries (latest)
+     */
+    async getVaccineCountries(): Promise<ApiState<VaccineCoverage[]>> {
+        const cacheKey = 'vaccine_countries_latest';
+
+        try {
+            const cached = cacheService.get<VaccineCoverage[]>(cacheKey);
+            if (cached) {
+                return { data: cached, loading: false, error: null };
+            }
+
+            const raw = await apiService.get<VaccineCountryCoverageResponse[]>('/v3/covid-19/vaccine/coverage/countries?lastdays=1');
+            const models = VaccineCoverageMapper.fromCountryResponses(raw);
+
+            cacheService.set(cacheKey, models, this.cacheTTL);
+
+            return { data: models, loading: false, error: null };
+        } catch (error) {
+            return { data: null, loading: false, error: this.getErrorMessage(error) };
+        }
+    }
+
     // ============ Utilities ============
 
     /**

@@ -82,6 +82,15 @@ export class ContinentData {
         return (this.raw.recovered / this.raw.cases) * 100;
     }
 
+    get color(): string {
+        if (this.cases > 50000000) return '#7f1d1d'; // very high
+        if (this.cases > 25000000) return '#b91c1c';
+        if (this.cases > 10000000) return '#c2410c';
+        if (this.cases > 5000000) return '#ea580c';
+        if (this.cases > 1000000) return '#d97706';
+        return '#65a30d'; // low
+    }
+
     // ============ Helper Methods ============
 
     /**
