@@ -92,7 +92,8 @@ const loading = ref(true);
 const hoveredContinent = ref<ContinentData | null>(null);
 
 // Local GeoJSON
-const GEOJSON_URL = '/continents.geo.json';
+const config = useRuntimeConfig();
+const GEOJSON_URL = `${config.app.baseURL}continents.geo.json`;
 const TILES_LIGHT = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png';
 const TILES_DARK = 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png';
 
