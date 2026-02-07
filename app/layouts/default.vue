@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-base-100" data-theme="covidDark">
+  <div class="min-h-screen bg-base-100" :data-theme="currentTheme">
     <div class="flex">
       <!-- Sidebar -->
       <Sidebar class="hidden lg:flex" />
@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, computed } from 'vue';
 import Sidebar from '~/components/layout/Sidebar.vue';
 import Header from '~/components/layout/Header.vue';
 import { useCovidStore } from '~/stores/useCovidStore';
@@ -48,16 +48,19 @@ import { useCovidStore } from '~/stores/useCovidStore';
 const isSidebarOpen = ref(false);
 const store = useCovidStore();
 
-// Set initial theme
+// Compute current theme based on store
+const currentTheme = computed(() => store.isDarkMode ? 'dark' : 'light');
+
+// Set theme on document root
 onMounted(() => {
-  document.documentElement.setAttribute('data-theme', store.isDarkMode ? 'dark' : 'mytheme');
+  document.documentElement.setAttribute('data-theme', currentTheme.value);
 });
 
-// Watch for theme changes
+// Watch for theme changes and sync to document root
 watch(
-  () => store.isDarkMode,
-  (isDark) => {
-    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'mytheme');
+  currentTheme,
+  (theme) => {
+    document.documentElement.setAttribute('data-theme', theme);
   }
 );
 </script>

@@ -20,6 +20,7 @@
 import { computed } from 'vue';
 import ChartWrapper from '~/components/shared/ChartWrapper.vue';
 import { PieChart } from '~/charts';
+import { useCovidStore } from '~/stores/useCovidStore';
 import type { ContinentData, CountryData } from '~/models';
 import type { ApexOptions } from 'apexcharts';
 
@@ -49,12 +50,15 @@ const props = withDefaults(defineProps<Props>(), {
   limit: 10,
 });
 
+// Get store for dark mode state
+const store = useCovidStore();
+
 // Build chart configuration
 const chartConfig = computed(() => {
   if (props.continents && props.continents.length > 0) {
     const chart = PieChart.fromContinents(props.continents, {
       chartType: props.chartType,
-      isDarkMode: true,
+      isDarkMode: store.isDarkMode,
     });
     return chart.getConfig();
   }
@@ -62,7 +66,7 @@ const chartConfig = computed(() => {
   if (props.countries && props.countries.length > 0) {
     const chart = PieChart.fromCountries(props.countries, props.limit, {
       chartType: props.chartType,
-      isDarkMode: true,
+      isDarkMode: store.isDarkMode,
     });
     return chart.getConfig();
   }

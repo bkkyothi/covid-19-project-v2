@@ -147,7 +147,10 @@ export class ScatterChart extends BaseChartConfig {
                     dataPointIndex: number;
                     w: { config: { series: Array<{ data: Array<{ label?: string; x: number; y: number }> }> } }
                 }) => {
-                    const point = w.config.series[seriesIndex].data[dataPointIndex];
+                    const point = w.config.series[seriesIndex]?.data[dataPointIndex];
+                    if (!point) {
+                        return '<div class="px-3 py-2 bg-base-200 border border-base-300 rounded shadow-lg">No data</div>';
+                    }
                     const label = point.label || 'Unknown';
                     const x = this.formatNumber(point.x);
                     const y = this.formatNumber(point.y);

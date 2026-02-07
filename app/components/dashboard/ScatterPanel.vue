@@ -2,23 +2,21 @@
   <ChartWrapper :loading="loading" :error="error">
     <div class="flex items-center justify-between mb-4">
       <h3 class="text-lg font-semibold">{{ title }}</h3>
-      
+
       <!-- Mode Selector -->
-      <div class="btn-group">
-        <button
-          class="btn btn-sm"
-          :class="mode === 'total' ? 'btn-primary' : 'btn-ghost'"
+      <div role="tablist" class="tabs tabs-border">
+        <a 
+          role="tab" 
+          class="tab" 
+          :class="mode === 'total' ? 'tab-active' : ''"
           @click="mode = 'total'"
-        >
-          Total
-        </button>
-        <button
-          class="btn btn-sm"
-          :class="mode === 'perMillion' ? 'btn-primary' : 'btn-ghost'"
+        >Total</a>
+        <a 
+          role="tab" 
+          class="tab" 
+          :class="mode === 'perMillion' ? 'tab-active' : ''"
           @click="mode = 'perMillion'"
-        >
-          Per Million
-        </button>
+        >Per Million</a>
       </div>
     </div>
 
@@ -38,6 +36,7 @@
 import { computed, ref } from 'vue';
 import ChartWrapper from '~/components/shared/ChartWrapper.vue';
 import { ScatterChart } from '~/charts';
+import { useCovidStore } from '~/stores/useCovidStore';
 import type { CountryData } from '~/models';
 import type { ApexOptions } from 'apexcharts';
 
@@ -65,6 +64,9 @@ const props = withDefaults(defineProps<Props>(), {
 
 const mode = ref<'total' | 'perMillion'>('total');
 
+// Get store for dark mode state
+const store = useCovidStore();
+
 // Build chart configuration
 const chartConfig = computed(() => {
   if (!props.countries || props.countries.length === 0) return null;
@@ -73,11 +75,11 @@ const chartConfig = computed(() => {
 
   if (mode.value === 'total') {
     chart = ScatterChart.fromCountriesCasesVsDeaths(props.countries, props.limit, {
-      isDarkMode: true,
+      isDarkMode: store.isDarkMode,
     });
   } else {
     chart = ScatterChart.fromCountriesPerMillion(props.countries, props.limit, {
-      isDarkMode: true,
+      isDarkMode: store.isDarkMode,
     });
   }
 

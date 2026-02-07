@@ -92,7 +92,7 @@ const isLoading = computed(() => store.isLoading);
 function toggleDarkMode(): void {
   store.toggleDarkMode();
   // Update HTML data-theme attribute
-  document.documentElement.setAttribute('data-theme', store.isDarkMode ? 'covidDark' : 'light');
+  document.documentElement.setAttribute('data-theme', store.isDarkMode ? 'dark' : 'light');
 }
 
 async function handleRefresh(): Promise<void> {

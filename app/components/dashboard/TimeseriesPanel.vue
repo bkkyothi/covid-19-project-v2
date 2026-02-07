@@ -4,16 +4,17 @@
       <h3 class="text-lg font-semibold">{{ title }}</h3>
       
       <!-- Period Selector -->
-      <div class="btn-group">
-        <button
+      <div role="tablist" class="tabs tabs-border">
+        <a
           v-for="period in periods"
           :key="period.value"
-          class="btn btn-sm"
-          :class="selectedPeriod === period.value ? 'btn-primary' : 'btn-ghost'"
+          role="tab"
+          class="tab"
+          :class="selectedPeriod === period.value ? 'tab-active' : ''"
           @click="selectPeriod(period.value)"
         >
           {{ period.label }}
-        </button>
+        </a>
       </div>
     </div>
 
@@ -33,6 +34,7 @@
 import { computed, ref, watch } from 'vue';
 import ChartWrapper from '~/components/shared/ChartWrapper.vue';
 import { TimeseriesChart } from '~/charts';
+import { useCovidStore } from '~/stores/useCovidStore';
 import type { HistoricalData } from '~/models';
 import type { ApexOptions } from 'apexcharts';
 
@@ -65,13 +67,16 @@ const props = withDefaults(defineProps<Props>(), {
 
 // Period options
 const periods = [
-  { label: '30D', value: 30 },
-  { label: '90D', value: 90 },
-  { label: '1Y', value: 365 },
-  { label: 'All', value: 0 },
+  { label: '30D', value: 30, color: 'btn-accent' },
+  { label: '90D', value: 90, color: 'btn-secondary' },
+  { label: '1Y', value: 365, color: 'btn-secondary' },
+  { label: 'All', value: 0, color: 'btn-primary' },
 ];
 
 const selectedPeriod = ref(0); // 0 = All
+
+// Get store for dark mode state
+const store = useCovidStore();
 
 // Filter data by period
 const filteredData = computed(() => {
@@ -90,7 +95,7 @@ const chartConfig = computed(() => {
     showCases: props.showCases,
     showDeaths: props.showDeaths,
     showRecovered: props.showRecovered,
-    isDarkMode: true,
+    isDarkMode: store.isDarkMode,
   });
 
   return chart.getConfig();
