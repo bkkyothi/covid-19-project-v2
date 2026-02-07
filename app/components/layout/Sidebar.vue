@@ -1,17 +1,26 @@
 <template>
-  <aside class="sidebar w-64 min-h-screen bg-base-200 border-r border-base-300 flex flex-col">
+  <aside class="sidebar w-full sm:w-64 min-h-screen bg-base-200 border-r border-base-300 flex flex-col">
     <!-- Logo / Brand -->
     <div class="p-4 border-b border-base-300">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary-content" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary-content" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-lg font-bold">COVID-19</h1>
+            <p class="text-xs text-base-content/60">Dashboard</p>
+          </div>
+        </div>
+        
+        <!-- Close Button (Mobile Only) -->
+        <button class="btn btn-ghost btn-square lg:hidden" @click="$emit('close')">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
-        </div>
-        <div>
-          <h1 class="text-lg font-bold">COVID-19</h1>
-          <p class="text-xs text-base-content/60">Dashboard</p>
-        </div>
+        </button>
       </div>
     </div>
 
@@ -107,6 +116,10 @@ import { useCovidStore } from '~/stores/useCovidStore';
  */
 const store = useCovidStore();
 const lastUpdated = computed(() => store.lastUpdated);
+
+defineEmits<{
+  'close': [];
+}>();
 
 /**
  * Toggle theme and update document data-theme attribute

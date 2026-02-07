@@ -15,10 +15,12 @@
       <div
         :class="[
           'fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 lg:hidden',
-          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          isSidebarOpen ? 'translate-x-0' : '-translate-x-full',
+          // If sidebar is open on mobile, make wrapper full width if sidebar is full width
+           isSidebarOpen && 'w-full sm:w-auto'
         ]"
       >
-        <Sidebar />
+        <Sidebar @close="isSidebarOpen = false" />
       </div>
 
       <!-- Main Content -->
@@ -54,6 +56,13 @@ const currentTheme = computed(() => store.isDarkMode ? 'dark' : 'light');
 // Set theme on document root
 onMounted(() => {
   document.documentElement.setAttribute('data-theme', currentTheme.value);
+});
+
+const route = useRoute();
+
+// Close sidebar on route change
+watch(() => route.path, () => {
+  isSidebarOpen.value = false;
 });
 
 // Watch for theme changes and sync to document root
