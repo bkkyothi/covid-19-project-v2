@@ -49,7 +49,12 @@
     </div>
 
     <!-- Flags Grid with 3D Hover Effect -->
-    <div v-else class="flags-grid">
+    <TransitionGroup 
+      name="list" 
+      tag="div" 
+      v-else 
+      class="flags-grid"
+    >
       <div
         v-for="country in filteredCountries"
         :key="country.iso2 || country.name"
@@ -64,14 +69,18 @@
             class="flag-image"
             loading="lazy"
           />
-          <figcaption class="flag-caption" :class="{ 'forced-visible': searchQuery }">
-            {{ country.name }}
-          </figcaption>
+          <figcaption
+            class="flag-caption"
+            :class="{
+              'forced-visible': searchQuery.trim().length > 0
+            }"
+            v-html="highlight(country.name)"
+          ></figcaption>
         </figure>
         <!-- 8 empty divs needed for the 3D effect -->
      
       </div>
-    </div>
+    </TransitionGroup>
 
     <!-- Country Detail Modal -->
     <dialog ref="countryModal" class="modal modal-bottom sm:modal-middle">
@@ -213,9 +222,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useCovidStore } from '~/stores/useCovidStore';
 import type { CountryData } from '~/models';
+import Fuse from 'fuse.js';
 
 // Store
 const store = useCovidStore();
@@ -230,18 +240,28 @@ const countries = computed(() => store.countries.data);
 const loading = computed(() => store.countries.loading);
 const error = computed(() => store.countries.error);
 
+const debouncedSearchQuery = ref('');
+let debounceTimeout: NodeJS.Timeout;
+
+watch(searchQuery, (newVal) => {
+  clearTimeout(debounceTimeout);
+  debounceTimeout = setTimeout(() => {
+    debouncedSearchQuery.value = newVal;
+  }, 300);
+});
+
 const filteredCountries = computed(() => {
   if (!countries.value) return [];
-  if (!searchQuery.value) return countries.value;
+  if (!debouncedSearchQuery.value) return countries.value;
   
-  const query = searchQuery.value.toLowerCase();
-  return countries.value.filter(country => {
-    const name = country.name.toLowerCase();
-    return name.startsWith(query) || 
-           name.includes(' ' + query) || 
-           country.iso2.toLowerCase().startsWith(query) || 
-           country.iso3.toLowerCase().startsWith(query);
-  });
+  const options = {
+    keys: ['name', 'iso2', 'iso3'],
+    threshold: 0.3, // 0.0 is perfect match, 1.0 is match anything
+    ignoreLocation: true
+  };
+  
+  const fuse = new Fuse(countries.value, options);
+  return fuse.search(debouncedSearchQuery.value).map(result => result.item);
 });
 
 // Methods
@@ -267,6 +287,15 @@ function getFatalityClass(rate: number): string {
   if (rate >= 3) return 'text-error';
   if (rate >= 2) return 'text-warning';
   return 'text-success';
+}
+
+function highlight(text: string) {
+  if (!searchQuery.value) return text;
+  const q = searchQuery.value;
+  return text.replace(
+    new RegExp(`(${q})`, 'gi'),
+    '<span class="text-warning">$1</span>'
+  );
 }
 
 // Lifecycle
@@ -406,4 +435,19 @@ onMounted(async () => {
   max-height: 90vh;
   overflow-y: auto;
 }
+
+/* List Transitions */
+.list-move,
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
+
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+
 </style>
