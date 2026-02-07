@@ -30,6 +30,7 @@ export const useCovidStore = defineStore('covid', () => {
     // UI State
     const isDarkMode = ref(true);
     const lastUpdated = ref<Date | null>(null);
+    const selectedContinent = ref<string | null>(null);
 
     // ============ Computed ============
 
@@ -59,6 +60,43 @@ export const useCovidStore = defineStore('covid', () => {
     const sortedContinents = computed(() => {
         if (!continents.value.data) return [];
         return [...continents.value.data].sort((a, b) => b.cases - a.cases);
+    });
+
+    // Better approach: Let the store provide the "Display Data"
+    const displayGlobalSummary = computed(() => {
+        if (!selectedContinent.value || !continents.value.data) {
+            return globalSummary.value.data;
+        }
+        const continent = continents.value.data.find(c => c.name === selectedContinent.value);
+        if (!continent) return globalSummary.value.data;
+
+        // Return an object that mimics GlobalSummary for the dashboard cards
+        // The dashboard uses: totalCases, todayCases, totalDeaths, todayDeaths, totalRecovered, todayRecovered, activeCases, criticalCases, totalTests, fatalityRate, recoveryRate
+        return {
+            totalCases: continent.cases,
+            todayCases: continent.todayCases,
+            totalDeaths: continent.deaths,
+            todayDeaths: continent.todayDeaths,
+            totalRecovered: continent.recovered,
+            todayRecovered: 0,
+            activeCases: continent.active,
+            criticalCases: continent.critical,
+            totalTests: continent.tests,
+            fatalityRate: continent.fatalityRate,
+            recoveryRate: continent.recoveryRate,
+        };
+    });
+
+    const filteredCountries = computed(() => {
+        if (!countries.value.data) return [];
+        if (!selectedContinent.value || !continents.value.data) return countries.value.data;
+
+        // Determine which countries are in the continent
+        const continent = continents.value.data.find(c => c.name === selectedContinent.value);
+        if (!continent) return countries.value.data;
+
+        // Filter countries list
+        return countries.value.data.filter(c => continent.countries.includes(c.name) || c.continent === selectedContinent.value);
     });
 
     // ============ Actions ============
@@ -154,6 +192,13 @@ export const useCovidStore = defineStore('covid', () => {
         isDarkMode.value = value;
     }
 
+    /**
+     * Set selected continent filter
+     */
+    function setSelectedContinent(continent: string | null): void {
+        selectedContinent.value = continent;
+    }
+
     // ============ Return ============
 
     return {
@@ -172,6 +217,9 @@ export const useCovidStore = defineStore('covid', () => {
         hasError,
         topCountries,
         sortedContinents,
+        displayGlobalSummary,
+        filteredCountries,
+        selectedContinent, // Export state for watchers if needed
 
         // Actions
         fetchGlobalSummary,
@@ -184,5 +232,6 @@ export const useCovidStore = defineStore('covid', () => {
         refreshData,
         toggleDarkMode,
         setDarkMode,
+        setSelectedContinent,
     };
 });

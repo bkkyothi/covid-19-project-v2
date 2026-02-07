@@ -161,9 +161,9 @@ definePageMeta({
 const store = useCovidStore();
 
 // Data from store
-const globalSummary = computed(() => store.globalSummary.data);
+const globalSummary = computed(() => store.displayGlobalSummary);
 const historicalData = computed(() => store.historicalData.data);
-const countries = computed(() => store.countries.data);
+const countries = computed(() => store.filteredCountries);
 const continents = computed(() => store.continents.data);
 
 // Check if initial load is happening
