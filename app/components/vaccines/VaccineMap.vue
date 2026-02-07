@@ -12,7 +12,7 @@
     <div id="vaccine-map" class="h-full w-full z-0 bg-base-200"></div>
 
     <!-- Legend -->
-    <div class="absolute bottom-6 left-6 z-[400] bg-base-100/90 p-4 rounded-xl shadow-lg border border-base-200 backdrop-blur-md">
+    <div class="absolute bottom-6 left-6 z-[35] bg-base-100/90 p-4 rounded-xl shadow-lg border border-base-200 backdrop-blur-md">
        <div class="flex items-center gap-2 mb-2">
          <span class="text-xs font-bold uppercase">Total Doses</span>
        </div>
@@ -26,7 +26,7 @@
     <!-- Hover Info Panel (Tooltip Custom) -->
     <div 
       v-if="hoveredCountry"
-      class="absolute top-6 right-6 p-4 rounded-xl shadow-xl z-[400] w-64 border border-base-200 bg-base-100/90 backdrop-blur-md transition-all duration-200"
+      class="absolute top-6 right-6 p-4 rounded-xl shadow-xl z-[35] w-64 border border-base-200 bg-base-100/90 backdrop-blur-md transition-all duration-200"
     >
         <h3 class="font-bold text-lg mb-1">{{ hoveredCountry.countryName }}</h3>
         <div class="text-xs opacity-70 uppercase mb-2">Vaccines rolled out</div>

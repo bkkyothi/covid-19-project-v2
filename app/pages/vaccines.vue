@@ -6,7 +6,7 @@
     </div>
 
     <!-- Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
       <div class="stats shadow bg-base-100 w-full border border-base-200" v-if="globalCoverage">
         <div class="stat">
           <div class="stat-figure text-success">

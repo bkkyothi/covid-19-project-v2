@@ -13,7 +13,7 @@
 
     <!-- Hover Info Panel -->
     <div 
-      class="absolute bottom-6 left-6 p-6 rounded-2xl shadow-xl z-[400] w-80 border border-base-200 transition-all duration-300 transform bg-base-100/90 text-base-content backdrop-blur-md"
+      class="absolute bottom-6 left-6 p-6 rounded-2xl shadow-xl z-[35] w-80 border border-base-200 transition-all duration-300 transform bg-base-100/90 text-base-content backdrop-blur-md"
       :class="hoveredContinent ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-4 scale-95 pointer-events-none'"
     >
       <div v-if="hoveredContinent">
@@ -58,7 +58,7 @@
     <!-- Filter Active Indicator -->
     <div 
       v-if="store.selectedContinent"
-      class="absolute top-6 left-1/2 -translate-x-1/2 bg-primary text-primary-content px-6 py-3 rounded-full shadow-lg z-[400] flex items-center gap-4 animate-in fade-in slide-in-from-top-4"
+      class="absolute top-6 left-1/2 -translate-x-1/2 bg-primary text-primary-content px-6 py-3 rounded-full shadow-lg z-[35] flex items-center gap-4 animate-in fade-in slide-in-from-top-4"
     >
       <div class="flex flex-col">
         <span class="text-xs opacity-80 uppercase tracking-widest">Dashboad Filter</span>
