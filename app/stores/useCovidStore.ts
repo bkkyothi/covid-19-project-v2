@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
+import { ref, computed, shallowRef } from 'vue';
 import { covidService } from '~/services';
 import type {
     GlobalSummary,
@@ -18,13 +18,14 @@ import { createApiState, createLoadingState, createSuccessState, createErrorStat
  */
 export const useCovidStore = defineStore('covid', () => {
     // ============ State ============
+    // Using shallowRef to preserve class instance types (prevents deep reactivity)
 
-    const globalSummary = ref<ApiState<GlobalSummary>>(createApiState());
-    const historicalData = ref<ApiState<HistoricalData>>(createApiState());
-    const countries = ref<ApiState<CountryData[]>>(createApiState());
-    const continents = ref<ApiState<ContinentData[]>>(createApiState());
-    const vaccineCoverage = ref<ApiState<VaccineCoverage>>(createApiState());
-    const states = ref<ApiState<StateData[]>>(createApiState());
+    const globalSummary = shallowRef<ApiState<GlobalSummary>>(createApiState());
+    const historicalData = shallowRef<ApiState<HistoricalData>>(createApiState());
+    const countries = shallowRef<ApiState<CountryData[]>>(createApiState());
+    const continents = shallowRef<ApiState<ContinentData[]>>(createApiState());
+    const vaccineCoverage = shallowRef<ApiState<VaccineCoverage>>(createApiState());
+    const states = shallowRef<ApiState<StateData[]>>(createApiState());
 
     // UI State
     const isDarkMode = ref(true);

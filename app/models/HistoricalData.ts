@@ -6,7 +6,11 @@ import type { TimeseriesDataPoint } from '~/types/chart';
  * Wraps historical timeseries data with transformation methods
  */
 export class HistoricalData {
-    constructor(private raw: HistoricalResponse) { }
+    readonly raw: HistoricalResponse;
+
+    constructor(raw: HistoricalResponse) {
+        this.raw = raw;
+    }
 
     // ============ Basic Getters ============
 
@@ -34,9 +38,11 @@ export class HistoricalData {
      */
     get dateRange(): { start: Date; end: Date } {
         const dates = this.dates;
+        const firstDate = dates[0] ?? new Date().toISOString();
+        const lastDate = dates[dates.length - 1] ?? new Date().toISOString();
         return {
-            start: new Date(dates[0]),
-            end: new Date(dates[dates.length - 1]),
+            start: new Date(firstDate),
+            end: new Date(lastDate),
         };
     }
 
@@ -99,10 +105,10 @@ export class HistoricalData {
         const result: { x: number; y: number }[] = [];
 
         for (let i = 1; i < dates.length; i++) {
-            const prevCases = this.raw.cases[dates[i - 1]] || 0;
-            const currCases = this.raw.cases[dates[i]] || 0;
+            const prevCases = this.raw.cases[dates[i - 1]!] || 0;
+            const currCases = this.raw.cases[dates[i]!] || 0;
             result.push({
-                x: new Date(dates[i]).getTime(),
+                x: new Date(dates[i]!).getTime(),
                 y: Math.max(0, currCases - prevCases),
             });
         }
@@ -118,10 +124,10 @@ export class HistoricalData {
         const result: { x: number; y: number }[] = [];
 
         for (let i = 1; i < dates.length; i++) {
-            const prevDeaths = this.raw.deaths[dates[i - 1]] || 0;
-            const currDeaths = this.raw.deaths[dates[i]] || 0;
+            const prevDeaths = this.raw.deaths[dates[i - 1]!] || 0;
+            const currDeaths = this.raw.deaths[dates[i]!] || 0;
             result.push({
-                x: new Date(dates[i]).getTime(),
+                x: new Date(dates[i]!).getTime(),
                 y: Math.max(0, currDeaths - prevDeaths),
             });
         }
@@ -143,9 +149,9 @@ export class HistoricalData {
         };
 
         filteredDates.forEach((date) => {
-            filteredRaw.cases[date] = this.raw.cases[date];
-            filteredRaw.deaths[date] = this.raw.deaths[date];
-            filteredRaw.recovered[date] = this.raw.recovered[date];
+            filteredRaw.cases[date] = this.raw.cases[date] ?? 0;
+            filteredRaw.deaths[date] = this.raw.deaths[date] ?? 0;
+            filteredRaw.recovered[date] = this.raw.recovered[date] ?? 0;
         });
 
         return new HistoricalData(filteredRaw);

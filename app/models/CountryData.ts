@@ -6,7 +6,7 @@ import type { LabeledValue } from '~/types/common';
  * Wraps country-specific COVID data with helper methods
  */
 export class CountryData {
-    constructor(private raw: CountryResponse) { }
+    constructor(public readonly raw: CountryResponse) { }
 
     // ============ Basic Getters ============
 

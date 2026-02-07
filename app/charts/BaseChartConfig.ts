@@ -29,7 +29,7 @@ export abstract class BaseChartConfig {
         return {
             chart: {
                 background: 'transparent',
-                foreColor: this.isDarkMode ? '#e5e7eb' : '#374151',
+                foreColor: this.isDarkMode ? '#e5e7eb' : '#15171aff',
                 toolbar: {
                     show: true,
                     tools: {
@@ -59,7 +59,7 @@ export abstract class BaseChartConfig {
                 mode: this.isDarkMode ? 'dark' : 'light',
             },
             grid: {
-                borderColor: this.isDarkMode ? '#374151' : '#e5e7eb',
+                borderColor: this.isDarkMode ? '#15171aff' : '#e5e7eb',
                 strokeDashArray: 3,
             },
             tooltip: {
@@ -72,7 +72,7 @@ export abstract class BaseChartConfig {
                 position: 'top',
                 horizontalAlign: 'left',
                 labels: {
-                    colors: this.isDarkMode ? '#e5e7eb' : '#374151',
+                    colors: this.isDarkMode ? '#e5e7eb' : '#15171aff',
                 },
             },
             responsive: [
