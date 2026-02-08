@@ -1,15 +1,15 @@
 <template>
   <ChartWrapper :loading="loading" :error="error">
-    <div class="flex items-center justify-between mb-4">
-      <h3 class="text-lg font-semibold">{{ title }}</h3>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+      <h3 class="text-base sm:text-lg font-semibold">{{ title }}</h3>
       
       <!-- Period Selector -->
-      <div role="tablist" class="tabs tabs-border">
+      <div role="tablist" class="tabs tabs-border tabs-sm sm:tabs-md">
         <a
           v-for="period in periods"
           :key="period.value"
           role="tab"
-          class="tab"
+          class="tab text-xs sm:text-sm"
           :class="selectedPeriod === period.value ? 'tab-active' : ''"
           @click="selectPeriod(period.value)"
         >
@@ -22,7 +22,7 @@
       <apexchart
         v-if="chartOptions && chartSeries.length"
         :type="chartType"
-        :height="height"
+        :height="responsiveHeight"
         :options="chartOptions"
         :series="chartSeries"
       />
@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, ref, onMounted, onUnmounted } from 'vue';
 import ChartWrapper from '~/components/shared/ChartWrapper.vue';
 import { TimeseriesChart } from '~/charts';
 import { useCovidStore } from '~/stores/useCovidStore';
@@ -74,6 +74,30 @@ const periods = [
 ];
 
 const selectedPeriod = ref(0); // 0 = All
+const windowWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 1024);
+
+// Responsive height calculation
+const responsiveHeight = computed(() => {
+  if (windowWidth.value < 480) return 260;
+  if (windowWidth.value < 640) return 300;
+  return props.height;
+});
+
+function handleResize() {
+  windowWidth.value = window.innerWidth;
+}
+
+onMounted(() => {
+  if (typeof window !== 'undefined') {
+    window.addEventListener('resize', handleResize);
+  }
+});
+
+onUnmounted(() => {
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('resize', handleResize);
+  }
+});
 
 // Get store for dark mode state
 const store = useCovidStore();

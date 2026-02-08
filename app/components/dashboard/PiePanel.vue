@@ -1,14 +1,14 @@
 <template>
   <ChartWrapper :loading="loading" :error="error">
     <div class="mb-4">
-      <h3 class="text-lg font-semibold">{{ title }}</h3>
+      <h3 class="text-base sm:text-lg font-semibold">{{ title }}</h3>
     </div>
 
     <ClientOnly>
       <apexchart
         v-if="chartOptions && chartSeries.length"
         :type="chartType"
-        :height="height"
+        :height="responsiveHeight"
         :options="chartOptions"
         :series="chartSeries"
       />
@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref, onMounted, onUnmounted } from 'vue';
 import ChartWrapper from '~/components/shared/ChartWrapper.vue';
 import { PieChart } from '~/charts';
 import { useCovidStore } from '~/stores/useCovidStore';
@@ -52,6 +52,30 @@ const props = withDefaults(defineProps<Props>(), {
 
 // Get store for dark mode state
 const store = useCovidStore();
+const windowWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 1024);
+
+// Responsive height calculation
+const responsiveHeight = computed(() => {
+  if (windowWidth.value < 480) return 280;
+  if (windowWidth.value < 640) return 320;
+  return props.height;
+});
+
+function handleResize() {
+  windowWidth.value = window.innerWidth;
+}
+
+onMounted(() => {
+  if (typeof window !== 'undefined') {
+    window.addEventListener('resize', handleResize);
+  }
+});
+
+onUnmounted(() => {
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('resize', handleResize);
+  }
+});
 
 // Build chart configuration
 const chartConfig = computed(() => {

@@ -77,6 +77,123 @@ export abstract class BaseChartConfig {
             },
             responsive: [
                 {
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            toolbar: {
+                                show: false,
+                            },
+                            height: 280,
+                        },
+                        legend: {
+                            position: 'bottom',
+                            fontSize: '10px',
+                            itemMargin: {
+                                horizontal: 8,
+                                vertical: 4,
+                            },
+                        },
+                        xaxis: {
+                            labels: {
+                                rotate: -45,
+                                rotateAlways: true,
+                                style: {
+                                    fontSize: '9px',
+                                },
+                            },
+                        },
+                        yaxis: {
+                            labels: {
+                                style: {
+                                    fontSize: '9px',
+                                },
+                                formatter: (value: number) => this.formatNumber(value),
+                            },
+                        },
+                        dataLabels: {
+                            enabled: false,
+                        },
+                        plotOptions: {
+                            pie: {
+                                donut: {
+                                    size: '50%',
+                                    labels: {
+                                        show: true,
+                                        name: {
+                                            fontSize: '10px',
+                                        },
+                                        value: {
+                                            fontSize: '12px',
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                        // markers: {
+                        //     size: 4,
+                        // },
+                    },
+                },
+                {
+                    breakpoint: 640,
+                    options: {
+                        chart: {
+                            toolbar: {
+                                show: false,
+                            },
+                            height: 300,
+                        },
+                        legend: {
+                            position: 'bottom',
+                            fontSize: '11px',
+                            itemMargin: {
+                                horizontal: 10,
+                                vertical: 5,
+                            },
+                        },
+                        xaxis: {
+                            labels: {
+                                rotate: -45,
+                                style: {
+                                    fontSize: '10px',
+                                },
+                            },
+                        },
+                        yaxis: {
+                            labels: {
+                                style: {
+                                    fontSize: '10px',
+                                },
+                                formatter: (value: number) => this.formatNumber(value),
+                            },
+                        },
+                        dataLabels: {
+                            style: {
+                                fontSize: '9px',
+                            },
+                        },
+                        plotOptions: {
+                            pie: {
+                                donut: {
+                                    size: '55%',
+                                    labels: {
+                                        show: true,
+                                        name: {
+                                            fontSize: '11px',
+                                        },
+                                        value: {
+                                            fontSize: '13px',
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                        // markers: {
+                        //     size: 5,
+                        // },
+                    },
+                },
+                {
                     breakpoint: 768,
                     options: {
                         chart: {
@@ -86,7 +203,11 @@ export abstract class BaseChartConfig {
                         },
                         legend: {
                             position: 'bottom',
+                            fontSize: '12px',
                         },
+                        // markers: {
+                        //     size: 6,
+                        // },
                     },
                 },
             ],
@@ -98,13 +219,16 @@ export abstract class BaseChartConfig {
      */
     protected formatNumber(value: number): string {
         if (value >= 1000000000) {
-            return (value / 1000000000).toFixed(1) + 'B';
+            const num = value / 1000000000;
+            return (num % 1 === 0 ? num.toFixed(0) : num.toFixed(1)) + 'B';
         }
         if (value >= 1000000) {
-            return (value / 1000000).toFixed(1) + 'M';
+            const num = value / 1000000;
+            return (num % 1 === 0 ? num.toFixed(0) : num.toFixed(1)) + 'M';
         }
         if (value >= 1000) {
-            return (value / 1000).toFixed(1) + 'K';
+            const num = value / 1000;
+            return (num % 1 === 0 ? num.toFixed(0) : num.toFixed(1)) + 'K';
         }
         return value.toString();
     }

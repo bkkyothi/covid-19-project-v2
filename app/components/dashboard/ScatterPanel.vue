@@ -1,19 +1,19 @@
 <template>
   <ChartWrapper :loading="loading" :error="error">
-    <div class="flex items-center justify-between mb-4">
-      <h3 class="text-lg font-semibold">{{ title }}</h3>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+      <h3 class="text-base sm:text-lg font-semibold">{{ title }}</h3>
 
       <!-- Mode Selector -->
-      <div role="tablist" class="tabs tabs-border">
+      <div role="tablist" class="tabs tabs-border tabs-sm sm:tabs-md">
         <a 
           role="tab" 
-          class="tab" 
+          class="tab text-xs sm:text-sm" 
           :class="mode === 'total' ? 'tab-active' : ''"
           @click="mode = 'total'"
         >Total</a>
         <a 
           role="tab" 
-          class="tab" 
+          class="tab text-xs sm:text-sm" 
           :class="mode === 'perMillion' ? 'tab-active' : ''"
           @click="mode = 'perMillion'"
         >Per Million</a>
@@ -24,7 +24,7 @@
       <apexchart
         v-if="chartOptions && chartSeries.length"
         type="scatter"
-        :height="height"
+        :height="responsiveHeight"
         :options="chartOptions"
         :series="chartSeries"
       />
@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted, onUnmounted } from 'vue';
 import ChartWrapper from '~/components/shared/ChartWrapper.vue';
 import { ScatterChart } from '~/charts';
 import { useCovidStore } from '~/stores/useCovidStore';
@@ -66,6 +66,30 @@ const mode = ref<'total' | 'perMillion'>('total');
 
 // Get store for dark mode state
 const store = useCovidStore();
+const windowWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 1024);
+
+// Responsive height calculation
+const responsiveHeight = computed(() => {
+  if (windowWidth.value < 480) return 260;
+  if (windowWidth.value < 640) return 300;
+  return props.height;
+});
+
+function handleResize() {
+  windowWidth.value = window.innerWidth;
+}
+
+onMounted(() => {
+  if (typeof window !== 'undefined') {
+    window.addEventListener('resize', handleResize);
+  }
+});
+
+onUnmounted(() => {
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('resize', handleResize);
+  }
+});
 
 // Build chart configuration
 const chartConfig = computed(() => {
